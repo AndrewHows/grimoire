@@ -1,0 +1,9 @@
+.root {
+	&:hover {
+		background-color: var(--mantine-color-gray-1) !important;
+	}
+
+	&[data-expanded] {
+		background-color: var(--mantine-color-gray-0);
+	}
+}

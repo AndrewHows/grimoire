@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Grimoire: Character Sheet Editor for D&amp;D 4E</title>
+
+		<style>
+			@font-face {
+				font-family: Bobbi;
+				src: url('/fonts/bobbi-the-hippie/regular.otf') format('opentype');
+				font-weight: normal;
+				font-style: normal;
+				font-display: swap;
+			}
+
+			@font-face {
+				font-family: Caveat;
+				src: url('/fonts/caveat/variable.ttf') format('truetype');
+				font-display: swap;
+			}
+
+			:root {
+				font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+				line-height: 1.5;
+				font-weight: 400;
+
+				color-scheme: light;
+
+				font-synthesis: none;
+				text-rendering: optimizeLegibility;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				-webkit-text-size-adjust: 100%;
+			}
+
+			body {
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body style="margin: 0; min-height: 100vh; width: 100vw">
+		<div id="root" style="display: flex; width: 100vw"></div>
+		<script type="module" src="/src/main.jsx"></script>
+	</body>
+</html>

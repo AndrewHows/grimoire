@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+ 		function userDoc() {
+		return get(/databases/$(database)/documents/people/$(request.auth.uid)).data
+	} 
+	
+	match /people/{person} {
+		allow read: if person == request.auth.uid
+		allow read: if userDoc().secure.admin == true
+		allow write: if person == request.auth.uid && !request.resource.data.keys().hasAny(['secure'])
+		allow write: if userDoc().secure.admin == true
+	}
+
+	match /user-data/{uid}/{document=**} {
+		allow read: if true
+		allow create: if request.auth.uid
+		allow write: if uid == request.auth.uid
+	}
+	
+	match /feature-flags/{flag} {
+		allow read: if true
+		allow write: if userDoc().secure.admin == true
+	}
+  }
+}
