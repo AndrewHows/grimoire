@@ -6,7 +6,7 @@ export const defaultLayout = [
 			{ section: 'Traits' },
 			{
 				columns: [
-					{ column: ['Portrait', 'Attributes', 'Skills', 'Inventory'] },
+					{ column: ['Portrait', 'Attributes', 'Skills'] },
 					{
 						column: [
 							'PowerPoints',
@@ -16,6 +16,7 @@ export const defaultLayout = [
 							'Senses',
 							'Saves',
 							'ExtraGroups',
+							'Inventory',
 						],
 					},
 					{ column: ['Features'] },

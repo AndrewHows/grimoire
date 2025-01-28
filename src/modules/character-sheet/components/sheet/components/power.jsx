@@ -76,7 +76,6 @@ export function Power({ power }) {
 									maxWidth: '150px',
 									whiteSpace: 'nowrap',
 									overflow: 'hidden',
-									fontSize: '11px',
 								}}
 							>
 								{getProp(power, 'name')}
