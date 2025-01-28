@@ -22,7 +22,7 @@ export const ImportDND4E = ({ existingData, onImport }) => {
 			<input
 				type="file"
 				ref={refFile}
-				value={null}
+				value=""
 				onChange={async (e) => {
 					const xml = await e.target.files[0].text();
 					refFile.current.value = '';

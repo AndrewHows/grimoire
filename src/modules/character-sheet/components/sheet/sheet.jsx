@@ -1,11 +1,42 @@
 import { Character } from './context';
 
-import { Column } from './components/layout';
+import { Column, Row } from './components/layout';
 import { useMediaQuery } from '@mantine/hooks';
-import { DefaultLayout } from '@/modules/character-sheet/sheet/layouts/default';
+import { Page } from '@/modules/character-sheet/components/sheet/components/page';
+import * as sections from './sections';
 
 export function Sheet({ id, character }) {
 	const isPrint = useMediaQuery('print');
+
+	const renderLayoutComponent = ({ page, columns, column, section }, idx) => {
+		if (page)
+			return (
+				<Page key={`page-${idx}`}>
+					<Column>{page.map(renderLayoutComponent)}</Column>
+				</Page>
+			);
+		if (columns)
+			return (
+				<Row key={`row-${idx}`} style={{ gap: '2rem' }}>
+					{columns.map(renderLayoutComponent)}
+				</Row>
+			);
+		if (column)
+			return (
+				<Column key={`column-${idx}`}>
+					{column.map((section, sectionIdx) => {
+						const Section = sections[section];
+						return Section ? (
+							<Section key={`${section}-${sectionIdx}`} />
+						) : null;
+					})}
+				</Column>
+			);
+		if (section) {
+			const Section = sections[section];
+			return Section ? <Section key={`${section}-${idx}`} /> : null;
+		}
+	};
 
 	return (
 		<Character.Provider
@@ -45,7 +76,7 @@ export function Sheet({ id, character }) {
 				}}
 			>
 				<Column style={{ alignItems: 'center', gap: isPrint ? 0 : '2rem' }}>
-					<DefaultLayout />
+					{character.layout?.map?.(renderLayoutComponent)}
 				</Column>
 			</div>
 		</Character.Provider>

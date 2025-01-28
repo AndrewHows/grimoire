@@ -1,3 +1,7 @@
+import { Character } from '@/modules/character-sheet/components/sheet/context';
+import { getProp, processText } from '@/modules/character-sheet/utils';
+import { useContext } from 'react';
+
 export function KeyValues({ values, style }) {
 	if (values.length === 0) return null;
 	return (
@@ -17,10 +21,12 @@ export function KeyValues({ values, style }) {
 }
 
 export function KeyValue({ value }) {
+	const { character } = useContext(Character);
+
 	return (
 		<div>
-			<strong>{value['name-override'] ?? value.name}:</strong>{' '}
-			{value['text-override'] ?? value.text}
+			<strong>{getProp(value, 'name')}:</strong>{' '}
+			{processText(getProp(value, 'text'), character)}
 		</div>
 	);
 }

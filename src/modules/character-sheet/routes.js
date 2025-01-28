@@ -1,4 +1,4 @@
-import { EditCharacter } from './pages/edit';
+import { EditCharacter } from './pages/edit/page';
 import { ViewCharacter } from './pages/view';
 
 export const characterRoutes = ({ user }) => [

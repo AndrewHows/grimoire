@@ -102,16 +102,16 @@ export const Controls = ({
 
 	return (
 		<Group justify="center">
-			<UploadPortrait
-				filename={character.name}
-				onUpload={(url) => onCharacterPropChange([], 'portrait', url)}
-			/>
 			<ImportDND4E
 				existingData={character}
 				onImport={(data) => onCharacterChange(data)}
 			/>
+			<UploadPortrait
+				filename={character.name}
+				onUpload={(url) => onCharacterPropChange([], 'portrait', url)}
+			/>
 			<Button onClick={() => onModeChange(mode === 'code' ? 'ui' : 'code')}>
-				{mode === 'ui' ? 'Edit Code' : 'Customise'}
+				{mode === 'ui' ? 'Edit Code' : 'Edit Sheet'}
 			</Button>
 			<Button onClick={() => window.open(`/sheet/${user.uid}/${loader.id}`)}>
 				View

@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "firebase deploy"
+    "deploy": "vite build && firebase deploy"
   },
   "dependencies": {
     "@mantine/core": "^7.13.4",
@@ -20,6 +20,7 @@
     "@tabler/icons-react": "^3.21.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "debounce": "^2.2.0",
     "firebase": "^10.14.0",
     "lucide-react": "^0.446.0",
     "mantine-datatable": "^7.12.4",

@@ -1,3 +1,31 @@
+import { getProp } from '@/modules/character-sheet/utils';
+
+export const defaultLayout = [
+	{
+		page: [
+			{ section: 'Traits' },
+			{
+				columns: [
+					{ column: ['Portrait', 'Attributes', 'Skills'] },
+					{
+						column: [
+							'PowerPoints',
+							'Health',
+							'Defences',
+							'Movement',
+							'Senses',
+							'Saves',
+							'ExtraGroups',
+						],
+					},
+					{ column: ['Features'] },
+				],
+			},
+		],
+	},
+	{ section: 'Powers' },
+];
+
 export function processCharacter(character) {
 	const features = [
 		...(character?.racial_features ?? []).map((f, raceIdx) => ({
@@ -32,12 +60,28 @@ export function processCharacter(character) {
 		...(character?.items
 			?.map((item, itemIdx) =>
 				item.powers.map((p, powerIdx) => ({
-					name: item['name-override'] ?? item.name,
+					name: getProp(item, 'name'),
 					...p,
 					path: ['items', itemIdx, 'powers', powerIdx],
 				}))
 			)
 			?.flat() ?? []),
+		...(character?.rituals ?? []).map((r, ritualIdx) => ({
+			name: r.name,
+			usage: 'ritual',
+			action: 'ritual',
+			path: ['rituals', ritualIdx],
+			hide: r.hide,
+			size: r.size,
+			keywords: r.category,
+			text: [
+				{ name: 'Cost', text: r['component cost'] },
+				{ name: 'Skill', text: r.skill },
+				{ name: 'Time', text: r.skill },
+				{ name: 'Duration', text: r.duration },
+				{ name: 'Effect', text: r.text },
+			].filter(({ text }) => Boolean(text)),
+		})),
 	];
 
 	return {

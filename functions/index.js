@@ -9,7 +9,6 @@ function filterXml(set, name, prop = 'type') {
 }
 
 function getRuleById(id, fromRule) {
-	console.log('getRule', id);
 	const rule = ruledata.elements[0].elements.find(
 		({ attributes: { 'internal-id': iid } }) => iid === id
 	);
@@ -79,8 +78,6 @@ function parseBonuses(rules, name) {
 function parseItem(id, item) {
 	const rule = getRuleById(id, item);
 	if (!rule) return null;
-
-	console.log(JSON.stringify(rule));
 
 	return {
 		name: rule.attributes.name,
@@ -325,8 +322,31 @@ exports.generateJson = onCall(
 				.map((e) => {
 					const id = e.elements.find(
 						({ attributes: { type } }) => type === 'Magic Item'
-					).attributes['internal-id'];
+					)?.attributes['internal-id'];
+					if (!id) console.log(id, JSON.stringify(e));
 					return parseItem(id, e);
+				})
+				.filter(Boolean),
+			rituals: sheet
+				.find(({ name }) => name === 'LootTally')
+				.elements.filter(({ attributes }) => parseInt(attributes['count']) >= 1)
+				.map((e) => {
+					const id = e.elements.find(
+						({ attributes: { type } }) => type === 'Ritual'
+					)?.attributes['internal-id'];
+					const rule = getRuleById(id, e);
+					const data = rule?.elements?.map((line) => [
+						line.attributes?.name?.trim().toLowerCase() ?? 'text',
+						line.text
+							? line.text.trim()
+							: line.elements?.find(({ type }) => type === 'text').text.trim(),
+					]);
+					return data
+						? {
+								name: rule.attributes.name,
+								...Object.fromEntries(data),
+						  }
+						: null;
 				})
 				.filter(Boolean),
 			powers: sheet

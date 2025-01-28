@@ -3,7 +3,7 @@ import { Character } from '../context';
 import { Section } from '../components/section';
 import { TextField } from '../components/text-field';
 import { KeyValues } from '../components/key-values';
-import { Column } from '@/modules/character-sheet/sheet/components/layout';
+import { Column } from '@/modules/character-sheet/components/sheet/components/layout';
 
 export const Defences = () => {
 	const { character } = useContext(Character);

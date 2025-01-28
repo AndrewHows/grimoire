@@ -1,5 +1,5 @@
 import { useLoaderData } from 'react-router-dom';
-import { Sheet } from '../sheet/sheet';
+import { Sheet } from '../components/sheet/sheet';
 import { useCharacter } from '@/modules/character-sheet/hooks/characters';
 import { processCharacter } from '@/modules/character-sheet/character';
 

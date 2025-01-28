@@ -1,152 +1,177 @@
 import { Select } from '@/components/select';
-import { Checkbox } from '@mantine/core';
+import {
+	actionOrder,
+	featureGroups,
+	getProp,
+	sortPowers,
+	usageOrder,
+} from '@/modules/character-sheet/utils';
+import {
+	Accordion,
+	Button,
+	Checkbox,
+	Group,
+	NumberInput,
+	Stack,
+	Textarea,
+	TextInput,
+} from '@mantine/core';
+import { useState } from 'react';
+
+const ElementAccordion = ({ elements, panel }) => {
+	const [selection, setSelection] = useState(null);
+
+	return (
+		<Accordion value={selection} onChange={(s) => setSelection(s)}>
+			{elements.map((element, idx) => {
+				const key = `${element.name}-${idx}`;
+				return (
+					<Accordion.Item key={key} value={key}>
+						<Accordion.Control>
+							<Group fz="xs">
+								<Checkbox
+									size="xs"
+									checked={!element.hide}
+									onChange={() => {
+										onChange(element.path, 'hide', !element.hide);
+									}}
+								/>
+								{element.name}
+							</Group>
+						</Accordion.Control>
+						{selection === key && (
+							<Accordion.Panel bg="gray.2">
+								<Stack>{panel(element)}</Stack>
+							</Accordion.Panel>
+						)}
+					</Accordion.Item>
+				);
+			})}
+		</Accordion>
+	);
+};
 
 export const CharacterEditor = ({ data, onChange }) => {
 	return (
-		<>
-			<h3>Features</h3>
-			<table style={{ fontSize: '12px' }}>
-				<thead>
-					<tr>
-						<th
-							style={{
-								width: '100%',
-							}}
-						/>
-						<th
-							style={{
-								minWidth: '10rem',
-								fontWeight: 'normal',
-								color: '#999999',
-							}}
-						>
-							Group
-						</th>
-						<th
-							style={{
-								fontWeight: 'normal',
-								color: '#999999',
-							}}
-						>
-							Hide
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{data.features.map((f, idx) => (
-						<tr key={`${f.name}-${idx}`}>
-							<td>{f.name}</td>
-							<td>
+		<Accordion transitionDuration={0}>
+			<Accordion.Item value="features">
+				<Accordion.Control>Features</Accordion.Control>
+				<Accordion.Panel>
+					<ElementAccordion
+						elements={data.features}
+						panel={(element) => (
+							<Stack>
 								<Select
-									value={f.group}
-									data={[
-										{ label: 'Action Points', value: 'action-point' },
-										{ label: 'Health', value: 'health' },
-										{ label: 'Defences', value: 'defences' },
-										{ label: 'Movement', value: 'movement' },
-										{ label: 'Senses', value: 'senses' },
-										{ label: 'Saves', value: 'saves' },
-										{ label: 'None', value: '' },
-									]}
+									size="xs"
+									label="Section"
+									value={element.group}
+									data={featureGroups}
 									onChange={(val) => {
-										onChange(f.path, 'group', val);
+										onChange(element.path, 'group', val);
 									}}
 								/>
-							</td>
-							<td>
-								<Checkbox
-									checked={f.hide}
-									onChange={() => {
-										onChange(f.path, 'hide', !f.hide);
-									}}
+								<TextInput
+									size="xs"
+									label="Text"
+									value={getProp(element, 'text') ?? ''}
+									onChange={(e) =>
+										onChange(element.path, 'text-override', e.target.value)
+									}
 								/>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-			<h3>Powers</h3>
-			<table style={{ fontSize: '12px' }}>
-				<thead>
-					<tr>
-						<th
-							style={{
-								width: '100%',
-							}}
-						/>
-						<th
-							style={{
-								minWidth: '10rem',
-								fontWeight: 'normal',
-								color: '#999999',
-							}}
-						>
-							Weapon
-						</th>
-						<th
-							style={{
-								minWidth: '10rem',
-								fontWeight: 'normal',
-								color: '#999999',
-							}}
-						>
-							Size
-						</th>
-						<th
-							style={{
-								fontWeight: 'normal',
-								color: '#999999',
-							}}
-						>
-							Hide
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					{data.powers.map((p, idx) => (
-						<tr key={`${p.name}-${idx}`}>
-							<td>{p.name}</td>
-							<td>
-								{p.weapons && (
+							</Stack>
+						)}
+					/>
+				</Accordion.Panel>
+			</Accordion.Item>
+			<Accordion.Item value="powers">
+				<Accordion.Control>Powers</Accordion.Control>
+				<Accordion.Panel>
+					<ElementAccordion
+						elements={data.powers}
+						panel={(power) => (
+							<>
+								<Group>
+									{power.weapons && (
+										<Select
+											size="xs"
+											label="Weapon"
+											value={power.weapon}
+											data={[
+												{ label: 'None', value: '' },
+												...power.weapons.map((weapon) => ({
+													label: weapon.name,
+													value: weapon.name,
+												})),
+											]}
+											onChange={(val) => {
+												onChange(power.path, 'weapon', val);
+											}}
+										/>
+									)}
 									<Select
-										value={p.weapon}
+										label="Size"
+										size="xs"
+										value={power.size}
 										data={[
-											{ label: 'None', value: '' },
-											...p.weapons.map((weapon) => ({
-												label: weapon.name,
-												value: weapon.name,
-											})),
+											{ label: 'Small', value: 'small' },
+											{ label: 'Normal', value: '' },
 										]}
 										onChange={(val) => {
-											onChange(p.path, 'weapon', val);
+											onChange(power.path, 'size', val);
 										}}
+										style={{ maxWidth: '6rem' }}
 									/>
-								)}
-							</td>
-							<td>
-								<Select
-									value={p.size}
-									data={[
-										{ label: 'Small', value: 'small' },
-										{ label: 'Normal', value: '' },
-									]}
-									onChange={(val) => {
-										onChange(p.path, 'size', val);
-									}}
-								/>
-							</td>
-							<td>
-								<Checkbox
-									checked={p.hide}
-									onChange={() => {
-										onChange(p.path, 'hide', !p.hide);
-									}}
-								/>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</>
+									<Select
+										label="Action"
+										size="xs"
+										value={getProp(power, 'action')}
+										data={actionOrder.map((a) => ({ label: a, value: a }))}
+										onChange={(val) => {
+											onChange(power.path, 'action-override', val);
+										}}
+										style={{ maxWidth: '7rem' }}
+									/>
+									<Select
+										label="Usage"
+										size="xs"
+										value={getProp(power, 'usage')}
+										data={usageOrder.map((a) => ({ label: a, value: a }))}
+										onChange={(val) => {
+											onChange(power.path, 'usage-override', val);
+										}}
+										style={{ maxWidth: '7rem' }}
+									/>
+									{power.usage !== 'At-Will' && (
+										<NumberInput
+											size="xs"
+											label="Uses"
+											min={1}
+											value={power.uses ?? ''}
+											onChange={(val) => onChange(power.path, 'uses', val)}
+											style={{ maxWidth: '4rem' }}
+										/>
+									)}
+								</Group>
+								{power.text.map((line, idx) => (
+									<Textarea
+										key={`${line.name}-${idx}`}
+										size="xs"
+										label={line.name}
+										value={getProp(line, 'text')}
+										onChange={(e) =>
+											onChange(
+												[...power.path, 'text', idx],
+												'text-override',
+												e.target.value
+											)
+										}
+									/>
+								))}
+							</>
+						)}
+					/>
+				</Accordion.Panel>
+			</Accordion.Item>
+		</Accordion>
 	);
 };

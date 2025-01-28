@@ -9,16 +9,16 @@ export const Senses = () => {
 	const { character } = useContext(Character);
 
 	return (
-		<Section label="Passive Senses">
+		<Section label="Senses">
 			<Column>
 				<Row style={{ justifyContent: 'center' }}>
 					<TextField
 						value={(character.skills?.Insight ?? 0) + 10}
-						label="Insight"
+						label="Passive Insight"
 					/>
 					<TextField
 						value={(character.skills?.Perception ?? 0) + 10}
-						label="Perception"
+						label="Passive Perception"
 					/>
 				</Row>
 				<KeyValues

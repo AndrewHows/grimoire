@@ -1,20 +1,22 @@
+import {
+	getProp,
+	getWeaponTrait,
+	processText,
+} from '@/modules/character-sheet/utils';
 import { Checkboxes } from './checkboxes';
 import { Header } from './header';
 import { Column, Row } from './layout';
-
-function getWeapon(power, attribute) {
-	return (
-		(power.weapon
-			? power.weapons.find(({ name }) => name === power.weapon)
-			: power.weapons?.[0])?.[attribute] ?? ''
-	);
-}
+import { useContext } from 'react';
+import { Character } from '@/modules/character-sheet/components/sheet/context';
 
 export function Power({ power }) {
+	const { character } = useContext(Character);
+
 	const background = {
 		'At-Will': '#006700',
 		Encounter: '#800200',
 		Daily: '#7c7c7c',
+		ritual: '#6F2DA8',
 	};
 
 	const action = {
@@ -26,6 +28,7 @@ export function Power({ power }) {
 		'opportunity action': 'O',
 		'immediate interrupt': 'II',
 		'immediate reaction': 'IR',
+		ritual: 'R',
 	};
 
 	const size = {
@@ -36,24 +39,27 @@ export function Power({ power }) {
 	return (
 		<div
 			style={{
-				width: '238px',
-				height: '334px',
+				width: '253px',
+				height: '350px',
 				border: '1px solid black',
 				borderRadius: '5px',
 				marginTop: '14px',
 			}}
 		>
 			<Header
-				style={{ backgroundColor: background[power.usage], marginTop: '-14px' }}
+				style={{
+					backgroundColor: background[getProp(power, 'usage')],
+					marginTop: '-14px',
+				}}
 			>
 				<Row style={{ justifyContent: 'space-between', gap: 0 }}>
 					<div style={{ fontSize: '12px', paddingLeft: '15px' }}>
 						<div
 							style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem' }}
 						>
-							{power.usage !== 'At-Will' && (
+							{getProp(power, 'usage') !== 'At-Will' && (
 								<Checkboxes
-									qty={power.uses}
+									qty={power.uses ?? 1}
 									style={{
 										width: '12px',
 										height: '12px',
@@ -62,7 +68,7 @@ export function Power({ power }) {
 									}}
 								/>
 							)}
-							{power.name}
+							{getProp(power, 'name')}
 						</div>
 					</div>
 					<div
@@ -80,7 +86,7 @@ export function Power({ power }) {
 							borderRadius: '100%',
 						}}
 					>
-						{action[power.action]}
+						{action[getProp(power, 'action')]}
 					</div>
 				</Row>
 			</Header>
@@ -89,26 +95,29 @@ export function Power({ power }) {
 					padding: '0 1rem',
 					gap: '0.25rem',
 					fontSize: size[power.size],
+					maxHeight: '310px',
+					overflow: 'hidden',
 				}}
 			>
-				{power.keywords && (
+				{getProp(power, 'keywords') && (
 					<div style={{ fontStyle: 'italic' }}>
-						{power['keywords-override'] ?? power.keywords}
+						{getProp(power, 'keywords')}
 					</div>
 				)}
-				{power.weapons?.length > 0 && power.weapon !== '' && (
+				{getProp(power, 'weapons')?.length > 0 && power.weapon !== '' && (
 					<div>
-						<strong>Weapon:</strong> {getWeapon(power, 'name')}
+						<strong>Weapon:</strong> {getWeaponTrait(power, 'name')}
 					</div>
 				)}
-				{(power['text-override'] ?? power.text).map((line, idx) => (
-					<div key={`${line.name}-${idx}`}>
-						<strong>{line['name-override'] ?? line.name}:</strong>{' '}
-						{(line['text-override'] ?? line.text ?? '')
-							.replaceAll('<attack>', `+${getWeapon(power, 'attack')}`)
-							.replaceAll('<damage>', getWeapon(power, 'damage'))}
-					</div>
-				))}
+				{getProp(power, 'text')
+					.filter(({ hide }) => !hide)
+					.filter((line) => getProp(line, 'text') !== '')
+					.map((line, idx) => (
+						<div key={`${line.name}-${idx}`}>
+							<strong>{getProp(line, 'name')}:</strong>{' '}
+							{processText(getProp(line, 'text') ?? '', character, power)}
+						</div>
+					))}
 			</Column>
 		</div>
 	);

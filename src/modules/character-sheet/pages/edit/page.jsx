@@ -1,6 +1,9 @@
-import { processCharacter } from '@/modules/character-sheet/character';
+import {
+	defaultLayout,
+	processCharacter,
+} from '@/modules/character-sheet/character';
 import { useCharacters } from '@/modules/character-sheet/hooks/characters';
-import { Sheet } from '@/modules/character-sheet/sheet/sheet';
+import { Sheet } from '../../components/sheet/sheet';
 import { Stack } from '@mantine/core';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
@@ -12,7 +15,7 @@ import { Controls } from './components/controls';
 export const EditCharacter = () => {
 	const loader = useLoaderData();
 	const characters = useCharacters();
-	const [mode, setMode] = useState('code');
+	const [mode, setMode] = useState('ui');
 	const [json, setJson] = useState({ json: {} });
 	const refContainer = useRef();
 	const refEditor = useRef();
@@ -29,7 +32,13 @@ export const EditCharacter = () => {
 			updateJson({});
 			return;
 		}
-		updateJson(character.data());
+		updateJson({
+			...character.data(),
+			layout:
+				character.data().layout && typeof character.data().layout === 'object'
+					? character.data().layout
+					: defaultLayout,
+		});
 	}, [character?.id, refEditor.current]);
 
 	useEffect(() => {
@@ -66,44 +75,62 @@ export const EditCharacter = () => {
 
 	return (
 		<>
-			<div style={{ display: 'flex', gap: '2rem', width: '100%' }}>
-				<Stack style={{ width: '100%', height: '100%' }}>
-					<Controls
-						character={json.json}
-						onCharacterChange={updateJson}
-						onCharacterPropChange={setJsonProp}
-						mode={mode}
-						onModeChange={setMode}
-					/>
-					<div style={{ overflow: 'auto', maxHeight: '100%', flex: 1 }}>
+			<div
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					maxHeight: '100vh',
+					gap: '2rem',
+					width: '100%',
+					overflow: 'hidden',
+				}}
+			>
+				<Controls
+					character={json.json}
+					onCharacterChange={updateJson}
+					onCharacterPropChange={setJsonProp}
+					mode={mode}
+					onModeChange={setMode}
+				/>
+
+				<div style={{ display: 'flex', gap: '2rem', width: '100%' }}>
+					<Stack style={{ width: '100%', height: '100%' }}>
 						<div
-							ref={refContainer}
 							style={{
-								width: '100%',
-								height: '100%',
-								display: mode === 'code' ? 'block' : 'none',
-							}}
-						/>
-						<div
-							style={{
-								width: '100%',
-								height: '100%',
-								display: mode === 'ui' ? 'block' : 'none',
+								overflow: 'auto',
+								maxHeight: 'calc(100vh - 9.5rem)',
+								flex: 1,
 							}}
 						>
-							<CharacterEditor data={characterData} onChange={setJsonProp} />
+							<div
+								ref={refContainer}
+								style={{
+									width: '100%',
+									height: '100%',
+									display: mode === 'code' ? 'block' : 'none',
+								}}
+							/>
+							<div
+								style={{
+									width: '100%',
+									height: '100%',
+									display: mode === 'ui' ? 'block' : 'none',
+								}}
+							>
+								<CharacterEditor data={characterData} onChange={setJsonProp} />
+							</div>
 						</div>
+					</Stack>
+					<div
+						style={{
+							overflow: 'auto',
+							maxHeight: 'calc(100vh - 9.5rem)',
+							width: 'calc(210mm + 4rem + 10mm)',
+							flexShrink: 0,
+						}}
+					>
+						<Sheet character={characterData} />
 					</div>
-				</Stack>
-				<div
-					style={{
-						overflow: 'auto',
-						maxHeight: '100vh',
-						width: 'calc(210mm + 2rem)',
-						flexShrink: 0,
-					}}
-				>
-					<Sheet character={characterData} />
 				</div>
 			</div>
 		</>

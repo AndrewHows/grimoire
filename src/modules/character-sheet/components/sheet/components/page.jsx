@@ -12,8 +12,9 @@ export function Page({ children }) {
 				scale: '1',
 				backgroundColor: '#ffffff',
 				border: '1px solid #000000',
-				padding: '5mm',
-				boxSizing: 'border-box',
+				padding: !isPrint ? '5mm' : 0,
+				boxSizing: 'content-box',
+				pageBreakBefore: 'always',
 				...(isPrint
 					? {
 							border: 'none',
