@@ -16,7 +16,7 @@ dist-ssr
 emulator-data
 
 # Editor directories and files
-.vscode/*
+.vscode
 .firebase
 !.vscode/extensions.json
 .idea
