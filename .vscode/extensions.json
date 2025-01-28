@@ -1,7 +1,0 @@
-{
-  // See ./.devcontainer/devcontainer.json extensions for a more extensive list
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "editorconfig.editorconfig",
-  ]
-}
