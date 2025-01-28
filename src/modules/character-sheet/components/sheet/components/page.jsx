@@ -7,12 +7,12 @@ export function Page({ children }) {
 		<section
 			style={{
 				width: '210mm',
-				height: '297mm',
+				height: '308mm',
 				position: 'relative',
 				scale: '1',
 				backgroundColor: '#ffffff',
 				border: '1px solid #000000',
-				padding: !isPrint ? '5mm' : 0,
+				padding: '5mm',
 				boxSizing: 'content-box',
 				pageBreakBefore: 'always',
 				...(isPrint

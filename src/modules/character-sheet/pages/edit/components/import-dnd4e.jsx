@@ -1,4 +1,5 @@
 import { firebase } from '@/lib/firebase';
+import { defaultLayout } from '@/modules/character-sheet/character';
 import { Button } from '@mantine/core';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useRef } from 'react';
@@ -44,7 +45,7 @@ export const ImportDND4E = ({ existingData, onImport }) => {
 					newData.items.forEach((_, idx) => {
 						newData.items[idx].properties.forEach((property, propertyIdx) => {
 							newData.items[idx].properties[propertyIdx] = {
-								...existingData?.items?.[idx].properties?.[propertyIdx],
+								...existingData?.items?.[idx]?.properties?.[propertyIdx],
 								...property,
 							};
 						});
@@ -55,6 +56,7 @@ export const ImportDND4E = ({ existingData, onImport }) => {
 							);
 						});
 					});
+					if (!newData.layout) newData.layout = defaultLayout;
 					onImport(newData);
 				}}
 				style={{ display: 'none' }}

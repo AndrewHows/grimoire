@@ -11,3 +11,4 @@ export { Saves } from './saves';
 export { Senses } from './senses';
 export { Skills } from './skills';
 export { Traits } from './traits';
+export { Inventory } from './inventory';

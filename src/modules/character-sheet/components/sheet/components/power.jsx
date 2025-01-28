@@ -8,15 +8,18 @@ import { Header } from './header';
 import { Column, Row } from './layout';
 import { useContext } from 'react';
 import { Character } from '@/modules/character-sheet/components/sheet/context';
+import { useMediaQuery } from '@mantine/hooks';
 
 export function Power({ power }) {
 	const { character } = useContext(Character);
+	const isPrint = useMediaQuery('print');
 
 	const background = {
 		'At-Will': '#006700',
 		Encounter: '#800200',
 		Daily: '#7c7c7c',
 		ritual: '#6F2DA8',
+		Consumable: '#00308F',
 	};
 
 	const action = {
@@ -40,7 +43,7 @@ export function Power({ power }) {
 		<div
 			style={{
 				width: '253px',
-				height: '350px',
+				height: isPrint ? '380px' : '360px',
 				border: '1px solid black',
 				borderRadius: '5px',
 				marginTop: '14px',
@@ -68,7 +71,16 @@ export function Power({ power }) {
 									}}
 								/>
 							)}
-							{getProp(power, 'name')}
+							<div
+								style={{
+									maxWidth: '150px',
+									whiteSpace: 'nowrap',
+									overflow: 'hidden',
+									fontSize: '11px',
+								}}
+							>
+								{getProp(power, 'name')}
+							</div>
 						</div>
 					</div>
 					<div

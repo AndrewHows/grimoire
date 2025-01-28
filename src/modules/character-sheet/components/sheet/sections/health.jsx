@@ -41,8 +41,19 @@ export const Health = () => {
 				</div>
 				<div style={{ flex: 1, padding: '0.25rem' }}>Current HP</div>
 			</div>
-			<Column>
-				<Checkboxes qty={character.surges} style={{ marginTop: '0.5rem' }} />
+			<Column style={{ marginTop: '0.25rem' }}>
+				<Column style={{ gap: '0.25rem' }}>
+					<Checkboxes qty={character.surges} style={{ marginTop: '0.5rem' }} />
+					<label
+						style={{
+							textAlign: 'center',
+							fontSize: '12px',
+							color: theme.colors.gray[5],
+						}}
+					>
+						Healing Surges
+					</label>
+				</Column>
 				<KeyValues
 					values={character.features.filter(({ group }) => group === 'health')}
 				/>

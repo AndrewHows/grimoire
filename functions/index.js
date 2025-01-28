@@ -82,8 +82,8 @@ function parseItem(id, item) {
 	return {
 		name: rule.attributes.name,
 		flavor: getRuleFlavor(rule),
-		level: parseInt(getRuleText(rule, 'Level')),
-		cost: parseInt(getRuleText(rule, 'Gold')),
+		level: parseInt(getRuleText(rule, 'Level') ?? 0),
+		cost: parseInt(getRuleText(rule, 'Gold') ?? 0),
 		slot:
 			getRuleText(rule, 'Item Slot') ?? getRuleText(rule, 'Magic Item Type'),
 		source: rule.attributes.source,
@@ -149,7 +149,8 @@ function parsePower(id, power) {
 		usage: power.elements
 			.find(({ attributes }) => attributes.name === 'Power Usage')
 			.elements.find(({ type }) => type === 'text')
-			.text.trim(),
+			.text.replace('(Special)', '')
+			.trim(),
 		flavour: getRuleFlavor(rule),
 		action: getRuleText(rule, 'Action Type').toLowerCase(),
 		type: getRuleText(rule, 'Power Type'),
@@ -223,7 +224,7 @@ exports.generateJson = onCall(
 		memory: '512MiB',
 		cors: true,
 	},
-	(req, res) => {
+	(req) => {
 		const xml = xml2js(req.data);
 		const sheet = xml.elements[0].elements.find(
 			({ name }) => name === 'CharacterSheet'
@@ -320,10 +321,12 @@ exports.generateJson = onCall(
 				.find(({ name }) => name === 'LootTally')
 				.elements.filter(({ attributes }) => parseInt(attributes['count']) >= 1)
 				.map((e) => {
-					const id = e.elements.find(
-						({ attributes: { type } }) => type === 'Magic Item'
-					)?.attributes['internal-id'];
-					if (!id) console.log(id, JSON.stringify(e));
+					const id =
+						e.elements.find(({ attributes: { type } }) => type === 'Magic Item')
+							?.attributes['internal-id'] ??
+						e.elements.find(({ attributes }) =>
+							Boolean(attributes['internal-id'])
+						)?.attributes['internal-id'];
 					return parseItem(id, e);
 				})
 				.filter(Boolean),

@@ -3,12 +3,10 @@ import {
 	actionOrder,
 	featureGroups,
 	getProp,
-	sortPowers,
 	usageOrder,
 } from '@/modules/character-sheet/utils';
 import {
 	Accordion,
-	Button,
 	Checkbox,
 	Group,
 	NumberInput,
@@ -18,7 +16,7 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 
-const ElementAccordion = ({ elements, panel }) => {
+const ElementAccordion = ({ elements, panel, onChange }) => {
 	const [selection, setSelection] = useState(null);
 
 	return (
@@ -34,6 +32,9 @@ const ElementAccordion = ({ elements, panel }) => {
 									checked={!element.hide}
 									onChange={() => {
 										onChange(element.path, 'hide', !element.hide);
+									}}
+									onClick={(e) => {
+										e.stopPropagation();
 									}}
 								/>
 								{element.name}
@@ -58,6 +59,7 @@ export const CharacterEditor = ({ data, onChange }) => {
 				<Accordion.Control>Features</Accordion.Control>
 				<Accordion.Panel>
 					<ElementAccordion
+						onChange={onChange}
 						elements={data.features}
 						panel={(element) => (
 							<Stack>
@@ -87,6 +89,7 @@ export const CharacterEditor = ({ data, onChange }) => {
 				<Accordion.Control>Powers</Accordion.Control>
 				<Accordion.Panel>
 					<ElementAccordion
+						onChange={onChange}
 						elements={data.powers}
 						panel={(power) => (
 							<>

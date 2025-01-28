@@ -29,6 +29,7 @@ export const featureGroups = [
 	{ label: 'Movement', value: 'movement' },
 	{ label: 'Senses', value: 'senses' },
 	{ label: 'Saves', value: 'saves' },
+	{ label: 'Skills', value: 'skills' },
 	{ label: 'None', value: '' },
 ];
 
@@ -44,7 +45,13 @@ export const actionOrder = [
 	'Ritual',
 ];
 
-export const usageOrder = ['At-Will', 'Encounter', 'Daily', 'Ritual'];
+export const usageOrder = [
+	'At-Will',
+	'Encounter',
+	'Daily',
+	'Consumable',
+	'Ritual',
+];
 
 export const getProp = (obj, prop) => {
 	return obj[`${prop}-override`] ?? obj[prop];
