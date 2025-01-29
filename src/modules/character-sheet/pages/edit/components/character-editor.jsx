@@ -128,7 +128,10 @@ export const CharacterEditor = ({ data, onChange }) => {
 										label="Action"
 										size="xs"
 										value={getProp(power, 'action')}
-										data={actionOrder.map((a) => ({ label: a, value: a }))}
+										data={actionOrder.map((a) => ({
+											label: a,
+											value: a.toLowerCase(),
+										}))}
 										onChange={(val) => {
 											onChange(power.path, 'action-override', val);
 										}}

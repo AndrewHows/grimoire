@@ -23,10 +23,7 @@ export function Sheet({ id, character, onChange }) {
 			0,
 			section
 		);
-		onChange?.({
-			...character,
-			layout,
-		});
+		onChange?.([], 'layout', layout);
 	};
 
 	const renderLayoutComponent = ({ page, columns, column, section }, idx) => {
@@ -126,7 +123,10 @@ export function Sheet({ id, character, onChange }) {
 						gap: isPrint ? 0 : '2rem',
 					}}
 				>
-					<DragDropContext onDragEnd={onDragEnd}>
+					<DragDropContext
+						onDragEnd={onDragEnd}
+						enableDefaultSensors={Boolean(onChange)}
+					>
 						{character.layout?.map?.(renderLayoutComponent)}
 					</DragDropContext>
 				</Column>
