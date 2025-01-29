@@ -5,11 +5,11 @@ import { TextField } from '../components/text-field';
 import { KeyValues } from '../components/key-values';
 import { Column } from '@/modules/character-sheet/components/sheet/components/layout';
 
-export const Defences = () => {
+export const Defences = (props) => {
 	const { character } = useContext(Character);
 
 	return (
-		<Section label="Defences">
+		<Section label="Defences" {...props}>
 			<Column style={{ gap: '0.5rem' }}>
 				<div style={{ display: 'flex', gap: '0.5rem' }}>
 					{Object.entries(character.defences ?? {}).map(([name, val]) => (
@@ -37,7 +37,6 @@ export const Defences = () => {
 					values={character.features.filter(
 						({ group }) => group === 'defences'
 					)}
-					style={{ marginTop: '1rem' }}
 				/>
 			</Column>
 		</Section>

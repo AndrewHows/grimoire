@@ -129,7 +129,7 @@ export const EditCharacter = () => {
 							flexShrink: 0,
 						}}
 					>
-						<Sheet character={characterData} />
+						<Sheet character={characterData} onChange={updateJson} />
 					</div>
 				</div>
 			</div>

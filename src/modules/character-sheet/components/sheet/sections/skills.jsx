@@ -5,11 +5,11 @@ import { Section } from '../components/section';
 import { KeyValues } from '@/modules/character-sheet/components/sheet/components/key-values';
 import { Column } from '@/modules/character-sheet/components/sheet/components/layout';
 
-export const Skills = () => {
+export const Skills = (props) => {
 	const { character } = useContext(Character);
 
 	return (
-		<Section label="Skills">
+		<Section label="Skills" {...props}>
 			<Column>
 				<div>
 					{Object.entries(character.skills ?? {}).map(([skill, value]) => (

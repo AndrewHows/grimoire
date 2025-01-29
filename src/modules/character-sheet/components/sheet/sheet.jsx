@@ -4,9 +4,30 @@ import { Column, Row } from './components/layout';
 import { useMediaQuery } from '@mantine/hooks';
 import { Page } from '@/modules/character-sheet/components/sheet/components/page';
 import * as sections from './sections';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
-export function Sheet({ id, character }) {
+export function Sheet({ id, character, onChange }) {
 	const isPrint = useMediaQuery('print');
+
+	const onDragEnd = (result) => {
+		const { source, destination } = result;
+		const layout = [...character.layout];
+		const srcIndex = parseInt(source.droppableId.split('-')[1]);
+		const destIndex = parseInt(destination.droppableId.split('-')[1]);
+		const [section] = layout[0].page[1].columns[srcIndex].column.splice(
+			source.index,
+			1
+		);
+		layout[0].page[1].columns[destIndex].column.splice(
+			destination.index,
+			0,
+			section
+		);
+		onChange?.({
+			...character,
+			layout,
+		});
+	};
 
 	const renderLayoutComponent = ({ page, columns, column, section }, idx) => {
 		if (page)
@@ -23,18 +44,42 @@ export function Sheet({ id, character }) {
 			);
 		if (column)
 			return (
-				<Column key={`column-${idx}`}>
-					{column.map((section, sectionIdx) => {
-						const Section = sections[section];
-						return Section ? (
-							<Section key={`${section}-${sectionIdx}`} />
-						) : null;
-					})}
-				</Column>
+				<Droppable
+					droppableId={`column-${idx}`}
+					key={`column-${idx}`}
+					renderClone={(provided, snapshot, rubric) => {
+						console.log(sections, rubric.draggableId);
+						const Section = sections[rubric.draggableId];
+						return (
+							<div
+								{...provided.draggableProps}
+								{...provided.dragHandleProps}
+								ref={provided.innerRef}
+							>
+								<Section />
+							</div>
+						);
+					}}
+				>
+					{(provided) => (
+						<Column ref={provided.innerRef} {...provided.droppableProps}>
+							{column.map((section, sectionIdx) => {
+								const Section = sections[section];
+								return Section ? (
+									<Section
+										key={`${section}-${sectionIdx}`}
+										draggableId={section}
+										index={sectionIdx}
+									/>
+								) : null;
+							})}
+						</Column>
+					)}
+				</Droppable>
 			);
 		if (section) {
 			const Section = sections[section];
-			return Section ? <Section key={`${section}-${idx}`} /> : null;
+			return Section ? <Section index={idx} /> : null;
 		}
 	};
 
@@ -75,8 +120,15 @@ export function Sheet({ id, character }) {
 						: null),
 				}}
 			>
-				<Column style={{ alignItems: 'center', gap: isPrint ? 0 : '2rem' }}>
-					{character.layout?.map?.(renderLayoutComponent)}
+				<Column
+					style={{
+						alignItems: 'center',
+						gap: isPrint ? 0 : '2rem',
+					}}
+				>
+					<DragDropContext onDragEnd={onDragEnd}>
+						{character.layout?.map?.(renderLayoutComponent)}
+					</DragDropContext>
 				</Column>
 			</div>
 		</Character.Provider>

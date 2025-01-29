@@ -10,7 +10,7 @@ import {
 import { getProp } from '@/modules/character-sheet/utils';
 import { useMantineTheme } from '@mantine/core';
 
-export const Inventory = () => {
+export const Inventory = (props) => {
 	const { character } = useContext(Character);
 	const theme = useMantineTheme();
 
@@ -33,7 +33,7 @@ export const Inventory = () => {
 	);
 
 	return (
-		<Section label="Inventory">
+		<Section label="Inventory" {...props}>
 			<Column style={{ marginTop: '0.5rem' }}>
 				<Column style={{ gap: '0.25rem' }}>
 					{slots.map((slot) =>

@@ -5,11 +5,11 @@ import { Column, Row } from '../components/layout';
 import { TextField } from '../components/text-field';
 import { KeyValues } from '../components/key-values';
 
-export const Movement = () => {
+export const Movement = (props) => {
 	const { character } = useContext(Character);
 
 	return (
-		<Section label="Movement">
+		<Section label="Movement" {...props}>
 			<Column>
 				<Row style={{ justifyContent: 'center' }}>
 					<TextField

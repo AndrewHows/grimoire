@@ -60,7 +60,6 @@ export const AppBar = () => {
 						</Text>
 					</Group>
 					<Group>
-						<LanguageMenu />
 						<ProfileMenu />
 					</Group>
 				</Group>

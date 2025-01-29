@@ -1,6 +1,9 @@
-export function Column({ children, style }) {
+import { forwardRef } from 'react';
+
+export const Column = forwardRef(({ children, style }, ref) => {
 	return (
 		<div
+			ref={ref}
 			style={{
 				display: 'flex',
 				flex: 1,
@@ -12,7 +15,7 @@ export function Column({ children, style }) {
 			{children}
 		</div>
 	);
-}
+});
 
 export function Row({ children, style }) {
 	return (

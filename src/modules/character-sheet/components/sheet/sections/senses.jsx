@@ -5,11 +5,11 @@ import { Section } from '../components/section';
 import { TextField } from '../components/text-field';
 import { Character } from '../context';
 
-export const Senses = () => {
+export const Senses = (props) => {
 	const { character } = useContext(Character);
 
 	return (
-		<Section label="Senses">
+		<Section label="Senses" {...props}>
 			<Column>
 				<Row style={{ justifyContent: 'center' }}>
 					<TextField

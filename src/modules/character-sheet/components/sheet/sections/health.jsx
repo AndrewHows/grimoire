@@ -7,12 +7,12 @@ import { TextField } from '../components/text-field';
 import { Character } from '../context';
 import { useMantineTheme } from '@mantine/core';
 
-export const Health = () => {
+export const Health = (props) => {
 	const { character } = useContext(Character);
 	const theme = useMantineTheme();
 
 	return (
-		<Section label="Health">
+		<Section label="Health" {...props}>
 			<Row style={{ justifyContent: 'center' }}>
 				<TextField label="Max HP" value={character.hp_max} />
 				<TextField label="Bloodied" value={character.bloodied} />
