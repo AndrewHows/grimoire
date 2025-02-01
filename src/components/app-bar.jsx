@@ -1,39 +1,13 @@
 import { CONTENT_WIDTH } from '@/constants';
-import { Nav } from './nav';
-import {
-	Button,
-	Card,
-	Drawer,
-	Group,
-	Text,
-	useMantineTheme,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { AlignJustify } from 'lucide-react';
+import { Card, Group, Text, useMantineTheme } from '@mantine/core';
 import { ProfileMenu } from '@/components/profile-menu';
-import { LanguageMenu } from '@/components/language-menu';
+import { Link } from 'react-router-dom';
 
 export const AppBar = () => {
-	const [navIsOpen, { open: openNav, close: closeNav }] = useDisclosure(false);
 	const theme = useMantineTheme();
 
 	return (
 		<>
-			<Drawer
-				opened={navIsOpen}
-				onClose={closeNav}
-				position="left"
-				size="xs"
-				styles={{
-					content: {
-						display: 'flex',
-						flexDirection: 'column',
-					},
-					body: { flexGrow: 1 },
-				}}
-			>
-				<Nav onNavigate={closeNav} />
-			</Drawer>
 			<Card
 				radius={0}
 				padding={8}
@@ -52,12 +26,11 @@ export const AppBar = () => {
 					}}
 				>
 					<Group>
-						<Button p="6" c="gray.0" variant="transparent" onClick={openNav}>
-							<AlignJustify />
-						</Button>
-						<Text c="gray.0" fw="semibold">
-							Grimoire
-						</Text>
+						<Link to="/app" style={{ textDecoration: 'none' }}>
+							<Text c="gray.0" fw="semibold">
+								Grimoire
+							</Text>
+						</Link>
 					</Group>
 					<Group>
 						<ProfileMenu />

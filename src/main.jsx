@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useMemo } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { useState } from 'react';

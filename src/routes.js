@@ -46,7 +46,7 @@ export const rootRoutes = ({ user }) => [
 				children: [
 					{
 						index: true,
-						loader: () => redirect('/app/character/edit'),
+						loader: () => redirect('/app/characters'),
 					},
 					...characterRoutes({ user }),
 					...profileRoutes({ user }),

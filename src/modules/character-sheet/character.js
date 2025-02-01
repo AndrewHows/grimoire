@@ -62,6 +62,8 @@ export function processCharacter(character) {
 			?.map((item, itemIdx) =>
 				item.powers.map((p, powerIdx) => ({
 					name: getProp(item, 'name'),
+					level: item.level,
+					type: 'Item',
 					...p,
 					path: ['items', itemIdx, 'powers', powerIdx],
 				}))

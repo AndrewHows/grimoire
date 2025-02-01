@@ -40,7 +40,7 @@ export const createDoc = (col, data) => {
 	return addDoc(collection(firestore, ...col), data);
 };
 
-export const updateDoc = (col, { id, ...data }) => {
+export const updateDoc = (col, { id: _id, ...data }) => {
 	updateDocCore(doc(firestore, ...col), data);
 };
 

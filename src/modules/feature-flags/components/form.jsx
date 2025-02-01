@@ -1,5 +1,4 @@
 import { AUDIENCES } from '@/constants';
-import { Firestore } from '@/contexts';
 import { useMessages } from '@/hooks/messages';
 import { useFeatures } from '@/modules/feature-flags/hooks/feature';
 import {
@@ -29,9 +28,8 @@ export const FeatureFlagForm = ({
 		mode: 'uncontrolled',
 		initialValues: { key: flag, ...featureFlags.get(flag)?.data() },
 		validate: {
-			key: (value) => (!Boolean(value) ? messages.fieldRequired('key') : null),
-			audience: (value) =>
-				!Boolean(value) ? messages.fieldRequired('Audience') : null,
+			key: (value) => (!value ? messages.fieldRequired('key') : null),
+			audience: (value) => (!value ? messages.fieldRequired('Audience') : null),
 		},
 	});
 
@@ -51,7 +49,7 @@ export const FeatureFlagForm = ({
 	return (
 		<form style={{ display: 'flex' }} onSubmit={form.onSubmit(onSave)}>
 			<Stack style={{ justifySelf: 'center', flexGrow: 1 }}>
-				{Boolean(flag) ? (
+				{flag ? (
 					<TextInput label={messages.key()} value={flag} disabled />
 				) : (
 					<TextInput

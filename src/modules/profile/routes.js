@@ -1,6 +1,6 @@
 import { Profile } from './pages/profile';
 
-export const profileRoutes = ({ user }) => [
+export const profileRoutes = () => [
 	{
 		path: 'profile',
 		Component: Profile,

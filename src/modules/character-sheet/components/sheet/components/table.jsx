@@ -2,7 +2,7 @@ import { useMantineTheme } from '@mantine/core';
 import { Row } from './layout';
 import global from '@/global.module.css';
 
-export function Table({ name, values, highlighted }) {
+export function Table({ name, values, highlighted, ...props }) {
 	const theme = useMantineTheme();
 
 	return (
@@ -10,6 +10,7 @@ export function Table({ name, values, highlighted }) {
 			style={{
 				alignItems: 'center',
 				backgroundColor: highlighted ? theme.colors.gray[0] : 'transparent',
+				...props.style,
 			}}
 		>
 			<div style={{ flex: 1 }}>{name}</div>
@@ -20,7 +21,7 @@ export function Table({ name, values, highlighted }) {
 					style={{
 						fontSize: '18px',
 						width: '20px',
-						textAlign: 'center',
+						textAlign: 'right',
 					}}
 				>
 					{v}

@@ -9,26 +9,10 @@ export const Traits = () => {
 		<>
 			<Row>
 				<TextField label="Name" value={character.name} style={{ flex: 1 }} />
-				<TextField
-					label="Level"
-					value={character.level}
-					style={{ width: '50px' }}
-				/>
-				<TextField
-					label="Race"
-					value={character.race}
-					style={{ width: '125px' }}
-				/>
-				<TextField
-					label="Size"
-					value={character.size}
-					style={{ width: '125px' }}
-				/>
-				<TextField
-					label="Deity"
-					value={character.deity}
-					style={{ width: '125px' }}
-				/>
+				<TextField label="Level" value={character.level} />
+				<TextField label="Race" value={character.race} />
+				<TextField label="Size" value={character.size} />
+				<TextField label="Deity" value={character.deity} />
 			</Row>
 			<Row>
 				<TextField

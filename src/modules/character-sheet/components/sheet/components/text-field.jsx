@@ -18,7 +18,7 @@ export function TextField({ value, label, style }) {
 					fontSize: '18px',
 					textAlign: 'center',
 					borderBottom: '1px solid black',
-					padding: '0 8px',
+					padding: '0 1rem',
 				}}
 			>
 				{value ?? <>&nbsp;</>}

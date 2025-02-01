@@ -3,7 +3,7 @@ import { Character } from './context';
 import { Column, Row } from './components/layout';
 import { useMediaQuery } from '@mantine/hooks';
 import { Page } from '@/modules/character-sheet/components/sheet/components/page';
-import * as sections from './sections';
+import { sections } from './sections';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 
 export function Sheet({ id, character, onChange }) {
@@ -45,13 +45,17 @@ export function Sheet({ id, character, onChange }) {
 					droppableId={`column-${idx}`}
 					key={`column-${idx}`}
 					renderClone={(provided, snapshot, rubric) => {
-						console.log(sections, rubric.draggableId);
 						const Section = sections[rubric.draggableId];
+						if (!Section) return;
 						return (
 							<div
 								{...provided.draggableProps}
-								{...provided.dragHandleProps}
 								ref={provided.innerRef}
+								style={{
+									borderRadius: '5px',
+									backgroundColor: 'white',
+									...provided.draggableProps.style,
+								}}
 							>
 								<Section />
 							</div>
@@ -62,6 +66,7 @@ export function Sheet({ id, character, onChange }) {
 						<Column ref={provided.innerRef} {...provided.droppableProps}>
 							{column.map((section, sectionIdx) => {
 								const Section = sections[section];
+								if (!Section) return;
 								return Section ? (
 									<Section
 										key={`${section}-${sectionIdx}`}
@@ -70,13 +75,15 @@ export function Sheet({ id, character, onChange }) {
 									/>
 								) : null;
 							})}
+							{provided.placeholder}
 						</Column>
 					)}
 				</Droppable>
 			);
 		if (section) {
 			const Section = sections[section];
-			return Section ? <Section index={idx} /> : null;
+			if (!Section) return;
+			return Section ? <Section key={section} index={idx} /> : null;
 		}
 	};
 
@@ -90,6 +97,7 @@ export function Sheet({ id, character, onChange }) {
 					powers: [
 						{
 							name: 'Action Point',
+							level: 0,
 							usage: 'Encounter',
 							action: 'free action',
 							text: [

@@ -9,14 +9,13 @@ export function Section({
 	style: styleProp,
 }) {
 	const style = {
-		backgroundColor: 'white',
 		fontSize: '12px',
 		...styleProp,
 	};
 	if (index !== undefined) {
 		return (
 			<Draggable key={label} index={index} draggableId={draggableId}>
-				{(provided, snapshot) => (
+				{(provided) => (
 					<div
 						ref={provided.innerRef}
 						{...provided.draggableProps}
@@ -24,6 +23,7 @@ export function Section({
 					>
 						<Header {...provided.dragHandleProps}>{label}</Header>
 						{children}
+						{provided.placeholder}
 					</div>
 				)}
 			</Draggable>

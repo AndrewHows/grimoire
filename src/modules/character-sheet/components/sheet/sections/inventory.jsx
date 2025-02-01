@@ -1,8 +1,6 @@
 import { useContext } from 'react';
 import { Character } from '../context';
-import { Skill } from '../components/skill';
 import { Section } from '../components/section';
-import { KeyValues } from '@/modules/character-sheet/components/sheet/components/key-values';
 import {
 	Column,
 	Row,
@@ -23,9 +21,9 @@ export const Inventory = (props) => {
 		'Arms',
 		'Hands',
 		'Ring',
-		'Ring',
 		'Waist',
 		'Feet',
+		'Tattoo',
 	];
 
 	const miscItems = character.items.filter(

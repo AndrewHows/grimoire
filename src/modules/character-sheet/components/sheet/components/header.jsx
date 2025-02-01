@@ -13,7 +13,7 @@ export function Header({ children, style, ...props }) {
 			}}
 		>
 			<label
-				className={global.bobbi}
+				className={global.metalMania}
 				style={{
 					height: '35px',
 					display: 'block',
@@ -21,7 +21,8 @@ export function Header({ children, style, ...props }) {
 					textAlign: 'center',
 					backgroundColor: 'black',
 					color: 'white',
-					lineHeight: '32px',
+					lineHeight: '30px',
+					letterSpacing: '2px',
 					...style,
 				}}
 			>

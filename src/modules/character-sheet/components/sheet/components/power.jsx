@@ -9,9 +9,11 @@ import { Column, Row } from './layout';
 import { useContext } from 'react';
 import { Character } from '@/modules/character-sheet/components/sheet/context';
 import { useMediaQuery } from '@mantine/hooks';
+import { useMantineTheme } from '@mantine/core';
 
 export function Power({ power }) {
 	const { character } = useContext(Character);
+	const theme = useMantineTheme();
 	const isPrint = useMediaQuery('print');
 
 	const background = {
@@ -38,6 +40,13 @@ export function Power({ power }) {
 		small: '10px',
 		undefined: '12px',
 	};
+
+	let descriptor = 'Universal';
+	if (power.usage === 'ritual') descriptor = 'Ritual';
+	else if (power.class)
+		descriptor = `${power.level ? `Level ${power.level}` : ''} ${
+			power.class ?? ''
+		} ${power.type ?? ''}`;
 
 	return (
 		<div
@@ -76,6 +85,7 @@ export function Power({ power }) {
 									maxWidth: '150px',
 									whiteSpace: 'nowrap',
 									overflow: 'hidden',
+									lineHeight: '31px',
 								}}
 							>
 								{getProp(power, 'name')}
@@ -90,11 +100,12 @@ export function Power({ power }) {
 							marginTop: '2px',
 							fontFamily:
 								'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',
-							fontSize: '12px',
+							fontSize: '10px',
 							fontWeight: 'bold',
 							lineHeight: '18px',
 							border: '2px solid white',
 							borderRadius: '100%',
+							letterSpacing: 0,
 						}}
 					>
 						{action[getProp(power, 'action')]}
@@ -103,32 +114,54 @@ export function Power({ power }) {
 			</Header>
 			<Column
 				style={{
-					padding: '0 1rem',
-					gap: '0.25rem',
-					fontSize: size[power.size],
-					maxHeight: '310px',
-					overflow: 'hidden',
+					alignContent: 'space-between',
+					gap: 0,
+					height: 'calc(100% - 21px)',
 				}}
 			>
-				{getProp(power, 'keywords') && (
-					<div style={{ fontStyle: 'italic' }}>
-						{getProp(power, 'keywords')}
-					</div>
-				)}
-				{getProp(power, 'weapons')?.length > 0 && power.weapon !== '' && (
-					<div>
-						<strong>Weapon:</strong> {getWeaponTrait(power, 'name')}
-					</div>
-				)}
-				{getProp(power, 'text')
-					.filter(({ hide }) => !hide)
-					.filter((line) => getProp(line, 'text') !== '')
-					.map((line, idx) => (
-						<div key={`${line.name}-${idx}`}>
-							<strong>{getProp(line, 'name')}:</strong>{' '}
-							{processText(getProp(line, 'text') ?? '', character, power)}
+				<Column
+					style={{
+						padding: '0 1rem',
+						gap: '0.25rem',
+						fontSize: size[power.size],
+						overflow: 'hidden',
+					}}
+				>
+					{getProp(power, 'keywords') && (
+						<div style={{ fontStyle: 'italic' }}>
+							{getProp(power, 'keywords')}
 						</div>
-					))}
+					)}
+					{getProp(power, 'weapons')?.length > 0 && power.weapon !== '' && (
+						<div>
+							<strong>Weapon:</strong> {getWeaponTrait(power, 'name')}
+						</div>
+					)}
+					{getProp(power, 'text')
+						.filter(({ hide }) => !hide)
+						.filter((line) => getProp(line, 'text') !== '')
+						.map((line, idx) => (
+							<div key={`${line.name}-${idx}`}>
+								<strong>{getProp(line, 'name')}:</strong>{' '}
+								{processText(getProp(line, 'text') ?? '', character, power)}
+							</div>
+						))}
+				</Column>
+				<div
+					style={{
+						backgroundColor: theme.colors.gray[3],
+						borderTop: `1px solid ${theme.colors.gray[5]}`,
+						color: theme.colors.gray[7],
+						borderRadius: '0  0  5px 5px',
+						padding: '0.25rem 0.5rem 0.125rem 0.5rem',
+						fontSize: '9px',
+						textTransform: 'uppercase',
+						whiteSpace: 'nowrap',
+						overflow: 'hidden',
+					}}
+				>
+					{descriptor}
+				</div>
 			</Column>
 		</div>
 	);

@@ -45,10 +45,8 @@ export const Login = () => {
 	const form = useForm({
 		mode: 'uncontrolled',
 		validate: {
-			email: (value) =>
-				!Boolean(value) ? messages.fieldRequired('Email') : null,
-			password: (value) =>
-				!Boolean(value) ? messages.fieldRequired('Password') : null,
+			email: (value) => (!value ? messages.fieldRequired('Email') : null),
+			password: (value) => (!value ? messages.fieldRequired('Password') : null),
 		},
 	});
 
@@ -88,7 +86,6 @@ export const Login = () => {
 					<Divider />
 					<Stack>
 						<GoogleAuthButton />
-						<FacebookAuthButton />
 					</Stack>
 				</Stack>
 			</Card>
@@ -117,15 +114,6 @@ const SocialAuthButton = ({ name, icon, ...props }) => {
 		</Button>
 	);
 };
-
-const FacebookAuthButton = () => (
-	<SocialAuthButton
-		name="Facebook"
-		icon="/auth-providers/facebook.svg"
-		color="#3b5998"
-		onClick={() => signInWithPopup(auth, new FacebookAuthProvider())}
-	/>
-);
 
 const GoogleAuthButton = () => (
 	<SocialAuthButton

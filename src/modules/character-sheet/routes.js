@@ -1,10 +1,15 @@
+import { CharacterList } from './pages/list';
 import { EditCharacter } from './pages/edit/page';
 import { ViewCharacter } from './pages/view';
 
-export const characterRoutes = ({ user }) => [
+export const characterRoutes = () => [
 	{
-		path: 'character',
+		path: 'characters',
 		children: [
+			{
+				index: true,
+				Component: CharacterList,
+			},
 			{
 				path: 'edit',
 				children: [

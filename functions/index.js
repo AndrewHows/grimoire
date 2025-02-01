@@ -1,7 +1,6 @@
 const { onCall } = require('firebase-functions/v2/https');
 const { xml2js } = require('xml-js');
 const fs = require('fs');
-
 const ruledata = JSON.parse(fs.readFileSync('./rules.json', 'utf8'));
 
 function filterXml(set, name, prop = 'type') {
@@ -75,6 +74,49 @@ function parseBonuses(rules, name) {
 		.filter(({ text }) => Boolean(text));
 }
 
+function parseItemText(text) {
+	if (!text) return [];
+	const parts = [
+		'',
+		...text.split(RegExp('(\n.* \\(.*? Action[\\)\\.])', 'g')),
+	];
+	const powertext = [];
+	for (let i = 0; i < parts.length; i += 2) {
+		powertext.push(
+			parts
+				.slice(i, i + 2)
+				.join(' ')
+				.replace(RegExp('(\\n\\r)', 'g'), ' ')
+				.trim()
+		);
+	}
+
+	return powertext.map((t) => {
+		const [a, b, textpart] = t.split(
+			RegExp('(Action|Reaction|Interrupt)\\)?\\.?', 'g')
+		);
+
+		const dataline = [a, b].join('');
+		const [_, action] = dataline.match(
+			RegExp('\\(?([^ ]* (Action|Reation|Interrupt))')
+		);
+		const [usage] = dataline.match(
+			RegExp('(At-Will|Encounter|Daily|Consumable)')
+		);
+		const keywordmatch = dataline.match(RegExp('\\((.*)\\) [\\*•]'));
+		const keywords = keywordmatch ? keywordmatch[1] : '';
+
+		const lines = textpart.split(RegExp('[\n\r]+', 'g')).map((t) => t.trim());
+		const text = lines.filter(Boolean).map((line) => {
+			if (line.indexOf(':') < 0) return { name: 'Effect', text: line };
+			const [name, text] = line.split(':');
+			return { name: name.trim(), text: text.trim() };
+		});
+
+		return { usage, action: action.toLowerCase(), keywords, text };
+	});
+}
+
 function parseItem(id, item) {
 	const rule = getRuleById(id, item);
 	if (!rule) return null;
@@ -88,55 +130,21 @@ function parseItem(id, item) {
 			getRuleText(rule, 'Item Slot') ?? getRuleText(rule, 'Magic Item Type'),
 		source: rule.attributes.source,
 		qty: parseInt(item.attributes.count),
+		equipped: parseInt(item.attributes['equip-count']) >= 1,
 		properties: rule.elements
 			?.filter(({ attributes }) => attributes?.name === 'Property')
 			?.map((e) => ({
 				text: e.elements?.find(({ type }) => type === 'text')?.text.trim(),
 			}))
 			.filter(({ text }) => Boolean(text)),
-		powers:
+		powers: parseItemText(
 			rule.elements
 				?.find(({ attributes }) =>
 					['Power', 'Attack Power'].includes(attributes?.name)
 				)
 				?.elements?.find(({ type }) => type === 'text')
 				?.text.trim()
-				.split(RegExp('\r\n?'))
-				.join(' ')
-				.split(RegExp('[A-Za-z] Power'))
-				.map((t) => {
-					const data = RegExp(
-						'.*Power \\((.*?)( • (.*))?\\): (.*?)\\. (.*)'
-					).exec(t);
-					if (!data)
-						return { usage: '', action: '', text: [{ name: '', text: t }] };
-					let text;
-					if (!data[5].includes(':'))
-						text = [{ name: 'Effect', text: data[5] }];
-					else {
-						const parts = data[5].split(':');
-						text = parts
-							.map((key, index, original) => {
-								if (index + 1 >= original.length) return null;
-								key = key.includes('.')
-									? key.slice(key.lastIndexOf('.') + 1).trim()
-									: key.trim();
-								let val = original[index + 1];
-								val = val.includes('.')
-									? val.slice(0, val.lastIndexOf('.'))
-									: val;
-								return { name: key, text: val.trim() };
-							})
-							.filter(Boolean);
-					}
-					return {
-						usage: data[1],
-						action: data[4].toLowerCase(),
-						text,
-					};
-				})
-				.flat()
-				.filter(Boolean) ?? [],
+		),
 	};
 }
 
@@ -332,7 +340,11 @@ exports.generateJson = onCall(
 				.filter(Boolean),
 			rituals: sheet
 				.find(({ name }) => name === 'LootTally')
-				.elements.filter(({ attributes }) => parseInt(attributes['count']) >= 1)
+				.elements.filter(
+					({ attributes, elements }) =>
+						parseInt(attributes['count']) >= 1 &&
+						elements.some(({ attributes: { type } }) => type === 'Ritual')
+				)
 				.map((e) => {
 					const id = e.elements.find(
 						({ attributes: { type } }) => type === 'Ritual'

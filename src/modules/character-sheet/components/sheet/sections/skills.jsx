@@ -12,14 +12,16 @@ export const Skills = (props) => {
 		<Section label="Skills" {...props}>
 			<Column>
 				<div>
-					{Object.entries(character.skills ?? {}).map(([skill, value]) => (
-						<Skill
-							key={skill}
-							name={skill}
-							value={value}
-							trained={character.skills_trained.includes(skill)}
-						/>
-					))}
+					{Object.entries(character.skills ?? {})
+						.sort(([a], [b]) => a.localeCompare(b))
+						.map(([skill, value]) => (
+							<Skill
+								key={skill}
+								name={skill}
+								value={value}
+								trained={character.skills_trained.includes(skill)}
+							/>
+						))}
 				</div>
 				<KeyValues
 					values={character.features.filter(({ group }) => group === 'skills')}

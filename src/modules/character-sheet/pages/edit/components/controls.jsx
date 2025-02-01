@@ -1,12 +1,13 @@
 import {
 	addDoc,
 	collection,
+	deleteDoc,
 	doc,
 	getFirestore,
 	setDoc,
 } from 'firebase/firestore';
 
-import { Button, Group } from '@mantine/core';
+import { Button, Group, Text } from '@mantine/core';
 import { UploadPortrait } from './upload-portrait';
 import { firebase } from '@/lib/firebase';
 import { useContext, useMemo, useState } from 'react';
@@ -16,6 +17,7 @@ import { ImportDND4E } from '@/modules/character-sheet/pages/edit/components/imp
 import { notifications } from '@mantine/notifications';
 import { CHARACTER_COLLECTION } from '@/constants';
 import { Auth } from '@/contexts';
+import { modals } from '@mantine/modals';
 
 const firestore = getFirestore(firebase);
 
@@ -31,6 +33,7 @@ export const Controls = ({
 	const loader = useLoaderData();
 	const navigate = useNavigate();
 	const [saving, setSaving] = useState(false);
+	const [deleting, setDeleting] = useState(false);
 
 	const onSave = async () => {
 		setSaving(true);
@@ -73,14 +76,14 @@ export const Controls = ({
 	};
 
 	const onDelete = useMemo(
-		() => async () => {
+		() => async (characterId) => {
 			try {
 				const characterDoc = doc(
 					firestore,
 					'user-data',
 					user.uid,
 					CHARACTER_COLLECTION,
-					loader?.id
+					characterId
 				);
 				await deleteDoc(characterDoc);
 				setDeleting(false);
@@ -97,7 +100,7 @@ export const Controls = ({
 				});
 			}
 		},
-		[messages, loader?.id]
+		[messages]
 	);
 
 	return (
@@ -106,20 +109,44 @@ export const Controls = ({
 				existingData={character}
 				onImport={(data) => onCharacterChange(data)}
 			/>
-			<UploadPortrait
-				filename={character.name}
-				onUpload={(url) => onCharacterPropChange([], 'portrait', url)}
-			/>
 			<Button onClick={() => onModeChange(mode === 'code' ? 'ui' : 'code')}>
 				{mode === 'ui' ? 'Edit Code' : 'Edit Sheet'}
 			</Button>
-			<Button onClick={() => window.open(`/sheet/${user.uid}/${loader.id}`)}>
-				View
-			</Button>
-			<Button onClick={onSave} disabled={saving}>
+			{Object.keys(character).length > 0 && (
+				<UploadPortrait
+					filename={character.name}
+					onUpload={(url) => onCharacterPropChange([], 'portrait', url)}
+				/>
+			)}
+			<Button
+				onClick={onSave}
+				disabled={Object.keys(character).length === 0 || saving}
+			>
 				{saving ? 'Saving...' : 'Save'}
 			</Button>
-			{loader?.id && <Button onClick={onDelete}>Delete</Button>}
+			<Button
+				disabled={!loader?.id}
+				onClick={() => window.open(`/sheet/${user.uid}/${loader.id}`)}
+			>
+				View
+			</Button>
+			<Button
+				disabled={!loader?.id || deleting}
+				onClick={() => {
+					modals.openConfirmModal({
+						title: messages.confirmDeletion(messages.character()),
+						children: (
+							<Text size="sm">
+								{messages.confirmDeletionBody(messages.character())}
+							</Text>
+						),
+						labels: { confirm: 'Confirm', cancel: 'Cancel' },
+						onConfirm: () => onDelete(loader?.id),
+					});
+				}}
+			>
+				{deleting ? 'Deleting...' : 'Delete'}
+			</Button>
 		</Group>
 	);
 };

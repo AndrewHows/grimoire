@@ -61,15 +61,23 @@ export const sortPowers = (character) => (a, b) => {
 	switch (character.powerSort) {
 		case 'action': {
 			return (
-				actionOrder.indexOf(getProp(a, 'action')) -
-				actionOrder.indexOf(getProp(b, 'action'))
+				actionOrder
+					.map((a) => a.toLowerCase())
+					.indexOf(getProp(a, 'action').toLowerCase()) -
+				actionOrder
+					.map((a) => a.toLowerCase())
+					.indexOf(getProp(b, 'action').toLowerCase())
 			);
 		}
 		case 'usage':
 		default: {
 			return (
-				usageOrder.indexOf(getProp(a, 'usage')) -
-				usageOrder.indexOf(getProp(b, 'usage'))
+				usageOrder
+					.map((a) => a.toLowerCase())
+					.indexOf(getProp(a, 'usage').toLowerCase()) -
+				usageOrder
+					.map((a) => a.toLowerCase())
+					.indexOf(getProp(b, 'usage').toLowerCase())
 			);
 		}
 	}

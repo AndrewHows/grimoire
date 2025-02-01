@@ -9,7 +9,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { createJSONEditor } from 'vanilla-jsoneditor';
 
-import { CharacterEditor } from './components/character-editor';
+import { CharacterEditor } from './components/character-editor/character-editor';
 import { Controls } from './components/controls';
 
 export const EditCharacter = () => {
@@ -21,13 +21,13 @@ export const EditCharacter = () => {
 	const refEditor = useRef();
 
 	const updateJson = (data) => {
-		refEditor.current.set({ json: data });
+		refEditor.current?.set({ json: data });
 		setJson({ json: data });
 	};
 
 	const character = characters.find((d) => d.id === loader?.id);
+
 	useEffect(() => {
-		if (!refEditor.current) return;
 		if (!character) {
 			updateJson({});
 			return;
@@ -61,7 +61,9 @@ export const EditCharacter = () => {
 		};
 	}, []);
 
-	const characterData = useMemo(() => processCharacter(json.json), [json.json]);
+	const characterData = useMemo(() => {
+		return processCharacter(json.json);
+	}, [json.json]);
 
 	const setJsonProp = (path, key, value) => {
 		const newJson = { ...json.json };
@@ -121,16 +123,18 @@ export const EditCharacter = () => {
 							</div>
 						</div>
 					</Stack>
-					<div
-						style={{
-							overflow: 'auto',
-							maxHeight: 'calc(100vh - 9.5rem)',
-							width: 'calc(210mm + 4rem + 10mm)',
-							flexShrink: 0,
-						}}
-					>
-						<Sheet character={characterData} onChange={setJsonProp} />
-					</div>
+					{Object.keys(json.json).length > 0 && (
+						<div
+							style={{
+								overflow: 'auto',
+								maxHeight: 'calc(100vh - 9.5rem)',
+								width: 'calc(210mm + 4rem + 10mm)',
+								flexShrink: 0,
+							}}
+						>
+							<Sheet character={characterData} onChange={setJsonProp} />
+						</div>
+					)}
 				</div>
 			</div>
 		</>

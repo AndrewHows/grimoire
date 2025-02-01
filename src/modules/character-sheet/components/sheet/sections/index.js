@@ -1,14 +1,33 @@
-export { Attributes } from './attributes';
-export { Defences } from './defences';
-export { ExtraGroups } from './extra-groups';
-export { Features } from './features';
-export { Health } from './health';
-export { Movement } from './movement';
-export { Portrait } from './portrait';
-export { PowerPoints } from './power-points';
-export { Powers } from './powers';
-export { Saves } from './saves';
-export { Senses } from './senses';
-export { Skills } from './skills';
-export { Traits } from './traits';
-export { Inventory } from './inventory';
+import { Attributes } from './attributes';
+import { Defences } from './defences';
+import { Features } from './features';
+import { Health } from './health';
+import { Movement } from './movement';
+import { Portrait } from './portrait';
+import { PowerPoints } from './power-points';
+import { Powers } from './powers';
+import { Saves } from './saves';
+import { Senses } from './senses';
+import { Skills } from './skills';
+import { Traits } from './traits';
+import { Inventory } from './inventory';
+import { Languages } from './languages';
+import { AttributeAndSkills } from '@/modules/character-sheet/components/sheet/sections/attribute-and-skills';
+
+export const sections = {
+	Attributes,
+	AttributeAndSkills,
+	Defences,
+	Features,
+	Health,
+	Movement,
+	Portrait,
+	PowerPoints,
+	Powers,
+	Saves,
+	Senses,
+	Skills,
+	Traits,
+	Inventory,
+	Languages,
+};
