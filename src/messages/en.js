@@ -29,13 +29,7 @@ export default {
 		'Please complete your profile to finish setting up your account',
 	fieldRequired: (field) => `"${field}" is required`,
 	pageNotFound: () => 'Page Not Found',
-	agriculture: () => 'Agriculture',
-	technology: () => 'Technology',
-	finance: () => 'Finance',
-	hospitality: () => 'Hospitality',
-	manufacturing: () => 'Manufacturing',
 	admin: () => 'Admin',
-	featureFlags: () => 'Feature flags',
 	audience: () => 'Audience',
 	key: () => 'Key',
 	description: () => 'Description',
@@ -65,6 +59,8 @@ export default {
 	more: () => 'More',
 	filter: () => 'Filter',
 	filterMinimumLength: () => 'Filter must be at least three characters',
+	monster: () => 'monster',
+	encounter: () => 'encounter',
 
 	firebaseError: (code, fallback) =>
 		({

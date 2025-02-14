@@ -1,15 +1,23 @@
 import { FEATURE_FLAG_COLLECTION } from '@/constants';
 import { useMessages } from '@/hooks/messages';
-import { firestore } from '@/lib/firebase';
+import { firebase } from '@/lib/firebase';
 import { FeatureFlagForm } from '../components/form';
 import { Button, Group, Stack, useMantineTheme } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import {
+	deleteDoc,
+	doc,
+	getFirestore,
+	setDoc,
+	updateDoc,
+} from 'firebase/firestore';
 import { useCallback, useMemo, useState } from 'react';
 import { InfoBox } from '@/components/info-box';
 import { useFeatures } from '@/modules/feature-flags/hooks/feature';
 import { DataList } from '@/components/data-list';
 import { Modal } from '@/components/modal';
+
+const firestore = getFirestore(firebase);
 
 export const FeatureFlagsPage = () => {
 	const featureFlags = useFeatures();

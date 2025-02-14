@@ -1,6 +1,6 @@
 import { Home } from './pages/home';
 
-export const homeRoutes = ({ user }) => [
+export const homeRoutes = () => [
 	{
 		path: 'home',
 		Component: Home,

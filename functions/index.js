@@ -97,12 +97,12 @@ function parseItemText(text) {
 		);
 
 		const dataline = [a, b].join('');
-		const [_, action] = dataline.match(
+		const action = dataline.match(
 			RegExp('\\(?([^ ]* (Action|Reation|Interrupt))')
-		);
-		const [usage] = dataline.match(
+		)?.[1];
+		const usage = dataline.match(
 			RegExp('(At-Will|Encounter|Daily|Consumable)')
-		);
+		)?.[0];
 		const keywordmatch = dataline.match(RegExp('\\((.*)\\) [\\*•]'));
 		const keywords = keywordmatch ? keywordmatch[1] : '';
 
@@ -113,7 +113,7 @@ function parseItemText(text) {
 			return { name: name.trim(), text: text.trim() };
 		});
 
-		return { usage, action: action.toLowerCase(), keywords, text };
+		return { usage, action: action?.toLowerCase(), keywords, text };
 	});
 }
 
@@ -325,45 +325,52 @@ exports.generateJson = onCall(
 			surge_value: Math.floor(getStat(sheet, 'Hit Points') / 4),
 			surges: getStat(sheet, 'Healing Surges'),
 			initiative: getStat(sheet, 'Initiative'),
-			items: sheet
-				.find(({ name }) => name === 'LootTally')
-				.elements.filter(({ attributes }) => parseInt(attributes['count']) >= 1)
-				.map((e) => {
-					const id =
-						e.elements.find(({ attributes: { type } }) => type === 'Magic Item')
-							?.attributes['internal-id'] ??
-						e.elements.find(({ attributes }) =>
-							Boolean(attributes['internal-id'])
+			items:
+				sheet
+					.find(({ name }) => name === 'LootTally')
+					.elements?.filter(
+						({ attributes }) => parseInt(attributes['count']) >= 1
+					)
+					.map((e) => {
+						const id =
+							e.elements.find(
+								({ attributes: { type } }) => type === 'Magic Item'
+							)?.attributes['internal-id'] ??
+							e.elements.find(({ attributes }) =>
+								Boolean(attributes['internal-id'])
+							)?.attributes['internal-id'];
+						return parseItem(id, e);
+					})
+					.filter(Boolean) ?? [],
+			rituals:
+				sheet
+					.find(({ name }) => name === 'LootTally')
+					.elements?.filter(
+						({ attributes, elements }) =>
+							parseInt(attributes['count']) >= 1 &&
+							elements.some(({ attributes: { type } }) => type === 'Ritual')
+					)
+					.map((e) => {
+						const id = e.elements.find(
+							({ attributes: { type } }) => type === 'Ritual'
 						)?.attributes['internal-id'];
-					return parseItem(id, e);
-				})
-				.filter(Boolean),
-			rituals: sheet
-				.find(({ name }) => name === 'LootTally')
-				.elements.filter(
-					({ attributes, elements }) =>
-						parseInt(attributes['count']) >= 1 &&
-						elements.some(({ attributes: { type } }) => type === 'Ritual')
-				)
-				.map((e) => {
-					const id = e.elements.find(
-						({ attributes: { type } }) => type === 'Ritual'
-					)?.attributes['internal-id'];
-					const rule = getRuleById(id, e);
-					const data = rule?.elements?.map((line) => [
-						line.attributes?.name?.trim().toLowerCase() ?? 'text',
-						line.text
-							? line.text.trim()
-							: line.elements?.find(({ type }) => type === 'text').text.trim(),
-					]);
-					return data
-						? {
-								name: rule.attributes.name,
-								...Object.fromEntries(data),
-						  }
-						: null;
-				})
-				.filter(Boolean),
+						const rule = getRuleById(id, e);
+						const data = rule?.elements?.map((line) => [
+							line.attributes?.name?.trim().toLowerCase() ?? 'text',
+							line.text
+								? line.text.trim()
+								: line.elements
+										?.find(({ type }) => type === 'text')
+										.text.trim(),
+						]);
+						return data
+							? {
+									name: rule.attributes.name,
+									...Object.fromEntries(data),
+							  }
+							: null;
+					})
+					.filter(Boolean) ?? [],
 			powers: sheet
 				.find(({ name }) => name === 'PowerStats')
 				.elements.map((p) => {

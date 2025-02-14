@@ -1,11 +1,30 @@
-import { LogOutIcon, PenLineIcon, UserIcon } from 'lucide-react';
+import { LogOutIcon, UserIcon } from 'lucide-react';
 
-export const main = () =>
+export const main = ({ user, showEncounters, showMonsters, showGames }) =>
 	[
 		{
-			label: 'Create',
-			link: '/app/character/edit',
-			icon: PenLineIcon,
+			label: 'Characters',
+			link: '/app/characters',
+		},
+		showMonsters && {
+			label: 'Monsters',
+			link: '/app/monsters',
+		},
+		showEncounters && {
+			label: 'Encounters',
+			link: '/app/encounters',
+		},
+		showGames && {
+			label: 'Games',
+			link: '/app/games',
+		},
+		user?.profile?.secure?.admin && {
+			label: 'Feature Flags',
+			link: '/admin/feature-flags',
+		},
+		user?.profile?.secure?.admin && {
+			label: 'Users',
+			link: '/admin/users',
 		},
 	].filter(Boolean);
 

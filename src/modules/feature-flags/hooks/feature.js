@@ -1,8 +1,10 @@
 import { AUDIENCES, FEATURE_FLAG_COLLECTION } from '@/constants';
 import { Firestore, Auth } from '@/contexts';
-import { firestore, KeyedArray } from '@/lib/firebase';
+import { firebase, KeyedArray } from '@/lib/firebase';
 import { useContext, useEffect } from 'react';
-import { collection } from 'firebase/firestore';
+import { collection, getFirestore } from 'firebase/firestore';
+
+const firestore = getFirestore(firebase);
 
 export const useFeature = (feature) => {
 	const { user } = useContext(Auth);

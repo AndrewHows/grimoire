@@ -1,6 +1,9 @@
 import { useMessages } from '@/hooks/messages';
-import { firestore } from '@/lib/firebase';
-import { collection as dbCollection, where } from 'firebase/firestore';
+import {
+	collection as dbCollection,
+	getFirestore,
+	where,
+} from 'firebase/firestore';
 import { DataTable } from 'mantine-datatable';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { PAGE_SIZE } from '@/constants';
@@ -10,6 +13,9 @@ import { Firestore } from '@/contexts';
 import { SearchBar } from '@/components/search-bar';
 import { trigram } from 'n-gram';
 import { Modal } from '@/components/modal';
+import { firebase } from '@/lib/firebase';
+
+const firestore = getFirestore(firebase);
 
 export const DataList = ({
 	label,

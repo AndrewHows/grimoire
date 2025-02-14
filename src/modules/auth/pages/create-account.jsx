@@ -17,12 +17,10 @@ export const CreateAccount = () => {
 	const form = useForm({
 		mode: 'uncontrolled',
 		validate: {
-			email: (value) =>
-				!Boolean(value) ? messages.fieldRequired('Email') : null,
-			password: (value) =>
-				!Boolean(value) ? messages.fieldRequired('Password') : null,
+			email: (value) => (!value ? messages.fieldRequired('Email') : null),
+			password: (value) => (!value ? messages.fieldRequired('Password') : null),
 			passwordCheck: (value) =>
-				!Boolean(value) ? messages.fieldRequired('Repeat Password') : null,
+				!value ? messages.fieldRequired('Repeat Password') : null,
 		},
 	});
 

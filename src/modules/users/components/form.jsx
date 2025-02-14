@@ -1,12 +1,14 @@
 import { useMessages } from '@/hooks/messages';
-import { CoreFields, Industry } from '@/modules/profile/components/fields';
+import { CoreFields } from '@/modules/profile/components/fields';
 import { Button, Group, Stack, Switch, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { modals } from '@mantine/modals';
 import { useCallback, useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { PROFILE_COLLECTION } from '@/constants';
-import { firestore } from '@/lib/firebase';
+import { firebase } from '@/lib/firebase';
+
+const firestore = getFirestore(firebase);
 
 export const UserForm = ({ userId, saving, deleting, onSave, onDelete }) => {
 	const messages = useMessages();
@@ -40,7 +42,6 @@ export const UserForm = ({ userId, saving, deleting, onSave, onDelete }) => {
 		<form style={{ display: 'flex' }} onSubmit={form.onSubmit(onSave)}>
 			<Stack style={{ justifySelf: 'center', flexGrow: 1 }}>
 				<CoreFields email={email} form={form} />
-				<Industry form={form} />
 				<Switch
 					label="Admin"
 					key={form.key('admin')}

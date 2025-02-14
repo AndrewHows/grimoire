@@ -6,13 +6,14 @@ import { useMessages } from '@/hooks/messages';
 import { useContext } from 'react';
 import { Auth } from '@/contexts';
 import { footer, main } from '@/nav';
-import { useCharacters } from '@/modules/character-sheet/hooks/characters';
 import { UserIcon } from 'lucide-react';
+import { useUserDocuments } from '@/hooks/firestore';
+import { CHARACTER_COLLECTION } from '@/constants';
 
 export const Nav = ({ onNavigate }) => {
 	const { user } = useContext(Auth);
 	const theme = useMantineTheme();
-	const characters = useCharacters();
+	const characters = useUserDocuments(CHARACTER_COLLECTION);
 
 	const footerNav = footer(user);
 
@@ -26,7 +27,7 @@ export const Nav = ({ onNavigate }) => {
 		>
 			<Stack gap="0">
 				{main(user).map((props) => (
-					<NavItem {...props} key={props.label} onNavigate={onNavigate} />
+					<NavItem key={props.label} {...props} onNavigate={onNavigate} />
 				))}
 				{characters
 					.sort((a, b) => {
@@ -57,7 +58,7 @@ export const Nav = ({ onNavigate }) => {
 				<Stack gap="8">
 					<Stack gap="0">
 						{footer(user).map((props) => (
-							<NavItem {...props} key={props.label} onNavigate={onNavigate} />
+							<NavItem key={props.label} {...props} onNavigate={onNavigate} />
 						))}
 					</Stack>
 				</Stack>
@@ -107,7 +108,7 @@ export const NavItem = ({
 				}}
 			>
 				{children.map((child) => (
-					<NavItem {...child} key={child.label} onNavigate={onNavigate} />
+					<NavItem key={child.label} {...child} onNavigate={onNavigate} />
 				))}
 			</NavLink>
 		);

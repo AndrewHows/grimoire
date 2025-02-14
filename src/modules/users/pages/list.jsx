@@ -1,13 +1,15 @@
 import { useMessages } from '@/hooks/messages';
-import { firestore, KeyedArray } from '@/lib/firebase';
+import { firebase } from '@/lib/firebase';
 import { notifications } from '@mantine/notifications';
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { useCallback, useMemo, useState } from 'react';
 import { PROFILE_COLLECTION } from '@/constants';
 import { CheckIcon, XIcon } from 'lucide-react';
 import { UserForm } from '@/modules/users/components/form';
 import { DataList } from '@/components/data-list';
 import { useMantineTheme } from '@mantine/core';
+
+const firestore = getFirestore(firebase);
 
 export const UsersPage = () => {
 	const messages = useMessages();

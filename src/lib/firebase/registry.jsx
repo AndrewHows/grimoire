@@ -110,11 +110,11 @@ export const FirestoreRegistry = ({ context, children }) => {
 
 	const unregisterQuery = useCallback((key) => {
 		if (queries[key])
-			setQueries({
-				...Object.fromEntries(
+			setQueries(
+				Object.fromEntries(
 					Object.entries(queries).filter(([qKey]) => qKey !== key)
-				),
-			});
+				)
+			);
 		if (listeners[key]) {
 			listeners[key]();
 			setListeners(
@@ -169,4 +169,3 @@ export const FirestoreRegistry = ({ context, children }) => {
 		</Context.Provider>
 	);
 };
-

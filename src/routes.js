@@ -7,7 +7,10 @@ import { profileRoutes } from '@/modules/profile/routes';
 import {
 	bareCharacterRoutes,
 	characterRoutes,
-} from '@/modules/character-sheet/routes';
+} from '@/modules/characters/routes';
+import { adminRoutes } from '@/modules/admin/routes';
+import { monsterRoutes } from '@/modules/monsters/routes';
+import { encounterRoutes } from '@/modules/encounters/routes';
 
 const rootLoader =
 	(user) =>
@@ -50,11 +53,22 @@ export const rootRoutes = ({ user }) => [
 					},
 					...characterRoutes({ user }),
 					...profileRoutes({ user }),
+					...monsterRoutes({ user }),
+					...encounterRoutes({ user }),
 					{
 						path: '*',
 						Component: NotFound,
 					},
 				],
+			},
+			{
+				path: 'admin',
+				Component: AuthenticatedLayout,
+				loader: () => {
+					if (!user.profile.secure?.admin) return redirect('/');
+					return null;
+				},
+				children: adminRoutes({ user }),
 			},
 			{
 				path: 'auth',

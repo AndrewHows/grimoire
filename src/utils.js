@@ -26,3 +26,41 @@ export function removeRecursive(haystack, value) {
 		}
 	});
 }
+
+export const intToDice = (
+	damage,
+	{ diceThreshold, dice, staticDice } = {
+		diceThreshold: 3,
+		dice: [6, 8, 10, 12],
+		staticDice: 1,
+	}
+) => {
+	const diceAvg = dice.map((d) => d / 2 + 0.5);
+	const dMod = diceAvg.map((d) => damage % d);
+	const minDMod = Math.min(...dMod);
+	const dieIndex = dMod.indexOf(minDMod);
+	let dieCount = Math.floor(damage / diceAvg[dieIndex]);
+	let bonus = Math.ceil(minDMod);
+	staticDice = Math.max(staticDice, dieCount - diceThreshold);
+	staticDice = Math.min(staticDice, dieCount - 1);
+	if (staticDice > 0) {
+		bonus += Math.floor(staticDice * diceAvg[dieIndex]);
+		dieCount -= staticDice;
+	}
+	const diceExp = [[dieCount, dice[dieIndex]]];
+	if (bonus !== 0) diceExp.push(bonus);
+	return diceExp;
+};
+
+export const diceToString = (dice) =>
+	dice
+		.map((e) =>
+			Array.isArray(e)
+				? `${e[0]}d${e[1]}`
+				: e < 0
+				? `- ${Math.abs(e)}`
+				: `+ ${e}`
+		)
+		.join(' ');
+
+export const signed = (n) => `${n >= 0 ? '+' : ''}${n}`;
