@@ -90,6 +90,11 @@ export const StatBlock = ({ monster }) => {
 							{monster.senses && `; ${monster.senses}`}
 						</Text>
 					</Group>
+					{monster.aura && (
+						<Text fz="sm">
+							<strong>Aura:</strong> {monster.aura}
+						</Text>
+					)}
 					<Group>
 						<Text fz="sm">
 							<strong>HP</strong> {monster.hp};
@@ -255,35 +260,46 @@ export const StatBlock = ({ monster }) => {
 				</Group>
 			</Stack>
 			<Group>
-				<Button
-					onClick={() =>
-						toPng(ref.current).then(function (dataUrl) {
-							const link = document.createElement('a');
-							link.download = `${monster.name}.png`;
-							link.href = dataUrl;
-							document.body.appendChild(link);
-							link.click();
-							document.body.removeChild(link);
-						})
-					}
-				>
+				<Button onClick={() => downloadAsImage(ref, monster.name, 'png')}>
 					As PNG
 				</Button>
-				<Button
-					onClick={() =>
-						toSvg(ref.current).then(function (dataUrl) {
-							const link = document.createElement('a');
-							link.download = `${monster.name}.svg`;
-							link.href = dataUrl;
-							document.body.appendChild(link);
-							link.click();
-							document.body.removeChild(link);
-						})
-					}
-				>
+				<Button onClick={() => downloadAsImage(ref, monster.name, 'svg')}>
 					As SVG
 				</Button>
 			</Group>
 		</Stack>
 	);
+};
+
+const downloadAsImage = async (ref, name, type) => {
+	const f = { png: toPng, svg: toSvg }[type];
+	const opts = {
+		includeStyleProperties: [
+			'backgroundColor',
+			'color',
+			'fontWeight',
+			'fontSize',
+			'lineHeight',
+			'textWrap',
+			'flex',
+			'fontFamily',
+			'margin',
+			'padding',
+		],
+	};
+	let dataUrl = '';
+	try {
+		dataUrl = await f(ref.current, opts);
+	} catch {
+		dataUrl = await f(ref.current, {
+			opts,
+			fontEmbedCSS: '',
+		});
+	}
+	const link = document.createElement('a');
+	link.download = `${name}.${type}`;
+	link.href = dataUrl;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
 };

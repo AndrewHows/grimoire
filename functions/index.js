@@ -160,7 +160,7 @@ function parsePower(id, power) {
 			.text.replace('(Special)', '')
 			.trim(),
 		flavour: getRuleFlavor(rule),
-		action: getRuleText(rule, 'Action Type').toLowerCase(),
+		action: getRuleText(rule, 'Action Type')?.toLowerCase(),
 		type: getRuleText(rule, 'Power Type'),
 		level: parseInt(getRuleText(rule, 'Level') ?? 0),
 		class: getRuleText(rule, 'Class')

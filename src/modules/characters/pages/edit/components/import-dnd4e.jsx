@@ -1,6 +1,7 @@
 import { firebase } from '@/lib/firebase';
 import { defaultLayout } from '@/modules/characters/character';
 import { Button } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useRef } from 'react';
 
@@ -25,40 +26,49 @@ export const ImportDND4E = ({ existingData, onImport }) => {
 				ref={refFile}
 				value=""
 				onChange={async (e) => {
-					const xml = await e.target.files[0].text();
-					refFile.current.value = '';
-					const { data: newData } = await generateJson(xml);
-					console.log(newData);
-					Object.entries(existingData).forEach(([key, value]) => {
-						if (!newData[key]) newData[key] = value;
-					});
-					['racial_features', 'class_features', 'feats'].forEach((group) =>
-						mergeElements(newData[group], existingData?.[group])
-					);
-					mergeElements(newData.powers, existingData?.powers);
-					mergeElements(newData.items, existingData?.items);
-					newData.powers.forEach((power, idx) => {
-						mergeElements(
-							newData.powers[idx].text,
-							existingData.powers?.find(({ name }) => name === power.name)?.text
-						);
-					});
-					newData.items.forEach((_, idx) => {
-						newData.items[idx].properties.forEach((property, propertyIdx) => {
-							newData.items[idx].properties[propertyIdx] = {
-								...existingData?.items?.[idx]?.properties?.[propertyIdx],
-								...property,
-							};
+					try {
+						const xml = await e.target.files[0].text();
+						refFile.current.value = '';
+						const { data: newData } = await generateJson(xml);
+						console.log(newData);
+						Object.entries(existingData).forEach(([key, value]) => {
+							if (!newData[key]) newData[key] = value;
 						});
-						newData.items[idx].powers.forEach((_, powerIdx) => {
+						['racial_features', 'class_features', 'feats'].forEach((group) =>
+							mergeElements(newData[group], existingData?.[group])
+						);
+						mergeElements(newData.powers, existingData?.powers);
+						mergeElements(newData.items, existingData?.items);
+						newData.powers.forEach((power, idx) => {
 							mergeElements(
-								newData.items[idx].powers[powerIdx].text,
-								existingData?.items?.[idx]?.powers?.[powerIdx]?.text
+								newData.powers[idx].text,
+								existingData.powers?.find(({ name }) => name === power.name)
+									?.text
 							);
 						});
-					});
-					if (!newData.layout) newData.layout = defaultLayout;
-					onImport(newData);
+						newData.items.forEach((_, idx) => {
+							newData.items[idx].properties.forEach((property, propertyIdx) => {
+								newData.items[idx].properties[propertyIdx] = {
+									...existingData?.items?.[idx]?.properties?.[propertyIdx],
+									...property,
+								};
+							});
+							newData.items[idx].powers.forEach((_, powerIdx) => {
+								mergeElements(
+									newData.items[idx].powers[powerIdx].text,
+									existingData?.items?.[idx]?.powers?.[powerIdx]?.text
+								);
+							});
+						});
+						if (!newData.layout) newData.layout = defaultLayout;
+						onImport(newData);
+					} catch (error) {
+						notifications.show({
+							color: 'red',
+							title: 'Error processing file',
+							message: error.message,
+						});
+					}
 				}}
 				style={{ display: 'none' }}
 			/>
